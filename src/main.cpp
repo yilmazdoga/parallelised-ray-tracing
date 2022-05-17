@@ -81,6 +81,9 @@ hitable *random_scene() {
 
 
 int main() {
+
+    auto imageSaveDir = "/Users/yilmazdoga/Documents/OZU_Courses/CS_535/project/ray-tracing/src/render_out.png";
+
     int nx = 600;
     int ny = 400;
     int ns = 10;
@@ -121,6 +124,7 @@ int main() {
         }
     }
 
+    imwrite(imageSaveDir, image);
     imshow("ray-traced image", image);
 
     cv::waitKey(0);
