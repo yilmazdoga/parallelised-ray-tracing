@@ -7,6 +7,8 @@ project ( RTWeekend
 
 set ( CMAKE_CXX_STANDARD 17 )
 
+find_package(OpenCV REQUIRED)
+
 set ( SOURCE_ONE_WEEKEND
   src/camera.h
   src/ray.h
@@ -20,4 +22,5 @@ set ( SOURCE_ONE_WEEKEND
 )
 
 add_executable(inOneWeekend      ${SOURCE_ONE_WEEKEND})
+target_link_libraries(inOneWeekend "${OpenCV_LIBS}")
 include_directories(src)

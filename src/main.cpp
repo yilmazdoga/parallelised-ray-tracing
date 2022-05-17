@@ -16,7 +16,7 @@
 #include "camera.h"
 #include "material.h"
 #include "random.h"
-
+#include <opencv2/opencv.hpp>
 
 vec3 color(const ray& r, hitable *world, int depth) {
     hit_record rec;
@@ -81,8 +81,8 @@ hitable *random_scene() {
 
 
 int main() {
-    int nx = 1200;
-    int ny = 800;
+    int nx = 600;
+    int ny = 400;
     int ns = 10;
     std::cout << "P3\n" << nx << " " << ny << "\n255\n";
     hitable *world = random_scene();
@@ -94,7 +94,9 @@ int main() {
 
     camera cam(lookfrom, lookat, vec3(0,1,0), 20, float(nx)/float(ny), aperture, dist_to_focus);
 
-    for (int j = ny-1; j >= 0; j--) {
+    cv::Mat image(ny,nx, CV_8UC3, cv::Scalar(0,0,0));
+
+    for (int j = 0; j < ny; j++) {
         for (int i = 0; i < nx; i++) {
             vec3 col(0, 0, 0);
             for (int s=0; s < ns; s++) {
@@ -108,7 +110,19 @@ int main() {
             int ir = int(255.99*col[0]);
             int ig = int(255.99*col[1]);
             int ib = int(255.99*col[2]);
-            std::cout << ir << " " << ig << " " << ib << "\n";
+
+            //std::cout << ir << " " << ig << " " << ib << "\n";
+            std::cout << j << " " << i << "\n";
+
+            auto intensity = cv::Vec3b (ib, ig, ir);
+            image.at<cv::Vec3b>(ny-j, i)[0] = intensity[0];
+            image.at<cv::Vec3b>(ny-j, i)[1] = intensity[1];
+            image.at<cv::Vec3b>(ny-j, i)[2] = intensity[2];
         }
     }
+
+    imshow("ray-traced image", image);
+
+    cv::waitKey(0);
+
 }
