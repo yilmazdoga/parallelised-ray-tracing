@@ -104,7 +104,7 @@ int main() {
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    # pragma omp parallel for num_threads(thread_count)
+    # pragma omp parallel for num_threads(thread_count) collapse(2)
     for (int j = 0; j < ny; j++) {
         for (int i = 0; i < nx; i++) {
             vec3 col(0, 0, 0);            
@@ -115,6 +115,7 @@ int main() {
                 ray r = cam.get_ray(u, v);
                 col += color(r, world,0);
             }
+            #pragma omp critical
             col /= float(ns);
             col = vec3( sqrt(col[0]), sqrt(col[1]), sqrt(col[2]) );
             int ir = int(255.99*col[0]);
