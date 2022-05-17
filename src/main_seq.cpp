@@ -16,8 +16,6 @@
 #include "camera.h"
 #include "material.h"
 #include "random.h"
-#include <chrono>
-#include <omp.h>
 #include <opencv2/opencv.hpp>
 
 vec3 color(const ray& r, hitable *world, int depth) {
@@ -84,13 +82,12 @@ hitable *random_scene() {
 
 int main() {
 
-    int thread_count = 16;
     auto imageSaveDir = "/Users/yilmazdoga/Documents/OZU_Courses/CS_535/project/ray-tracing/src/render_out.png";
 
     int nx = 600;
     int ny = 400;
     int ns = 50;
-    // std::cout << "P3\n" << nx << " " << ny << "\n255\n";
+    std::cout << "P3\n" << nx << " " << ny << "\n255\n";
     hitable *world = random_scene();
 
     vec3 lookfrom(13,2,3);
@@ -102,13 +99,9 @@ int main() {
 
     cv::Mat image(ny,nx, CV_8UC3, cv::Scalar(0,0,0));
 
-    auto start = std::chrono::high_resolution_clock::now();
-
-    # pragma omp parallel for num_threads(thread_count)
     for (int j = 0; j < ny; j++) {
         for (int i = 0; i < nx; i++) {
-            vec3 col(0, 0, 0);            
-            # pragma omp parallel for num_threads(thread_count) reduction(+: col)
+            vec3 col(0, 0, 0);
             for (int s=0; s < ns; s++) {
                 float u = float(i + random_double()) / float(nx);
                 float v = float(j + random_double()) / float(ny);
@@ -127,14 +120,7 @@ int main() {
             image.at<cv::Vec3b>(ny-j, i)[2] = intensity[2];
 
         }
-        std::cout << "."<< std::endl;
     }
-
-    auto stop = std::chrono::high_resolution_clock::now();
-
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-
-    std::cout << "duration (ms): " << duration.count() << std::endl;
 
     imwrite(imageSaveDir, image);
     imshow("ray-traced image", image);
