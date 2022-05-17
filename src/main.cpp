@@ -85,7 +85,7 @@ hitable *random_scene() {
 int main() {
 
     int thread_count = 16;
-    auto imageSaveDir = "/Users/yilmazdoga/Documents/OZU_Courses/CS_535/project/ray-tracing/src/render_out.png";
+    auto imageSaveDir = "/Users/yilmazdoga/Documents/OZU_Courses/CS_535/project/ray-tracing/out/render_out.png";
 
     int nx = 600;
     int ny = 400;
